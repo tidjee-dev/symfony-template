@@ -19,20 +19,20 @@ It provides:
 ## 🚀 Tech Stack
 
 - **Languages & Database**
-  
+
   [![PHP](https://img.shields.io/badge/PHP-8.2^-777BB4?logo=php)](https://www.php.net/) [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql)](https://www.mysql.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-316192?logo=postgresql)](https://www.postgresql.org/)
 
 - **Frameworks**
-  
+
   [![Symfony](https://img.shields.io/badge/Symfony-7.x-000?logo=symfony)](https://symfony.com/)
 
 - **Web Server**
-  
+
   [![Apache](https://img.shields.io/badge/Apache-2.4-D42029?logo=apache)](https://httpd.apache.org/)
 
 - **Tools**
-  
-  ![Castor](https://img.shields.io/badge/Castor-latest-000) [![Docker](https://img.shields.io/badge/Docker-20.10-0db7ed?logo=docker)](https://docs.docker.com/) ![PHPMyAdmin](https://img.shields.io/badge/PHPMyAdmin-latest-4479A1?logo=phpmyadmin) ![pgAdmin](https://img.shields.io/badge/pgAdmin-latest-000)
+
+  ![Castor](https://img.shields.io/badge/Castor-latest-000) [![Docker](https://img.shields.io/badge/Docker-latest-0db7ed?logo=docker)](https://docs.docker.com/) ![PHPMyAdmin](https://img.shields.io/badge/PHPMyAdmin-latest-4479A1?logo=phpmyadmin) ![pgAdmin](https://img.shields.io/badge/pgAdmin-latest-000)
 
 ## 📌 Requirements
 
