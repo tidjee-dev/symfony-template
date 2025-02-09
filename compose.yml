@@ -1,16 +1,15 @@
-#_=========================================================================_#
-#?                 ONLY USE THESE SERVICES IN DEVELOPMENT!                  #
-#                                                                           #
-#            !!! NEVER EXPOSE THESE SERVICES IN PRODUCTION! !!!             #
-#_-------------------------------------------------------------------------_#
-#  Info: You can copy the MODEL.env file to .env and update the values.     #
-#  Info: `cp MODEL.env .env`                                                #
-#_=========================================================================_#
+#_===========================================================================_#
+#?                  ONLY USE THESE SERVICES IN DEVELOPMENT!                   #
+#                                                                             #
+#             !!! NEVER EXPOSE THESE SERVICES IN PRODUCTION! !!!              #
+#_---------------------------------------------------------------------------_#
+#  Info: You can copy the MODEL.env file to .env and update the values.       #
+#  Info: `cp MODEL.env .env`                                                  #
+#_===========================================================================_#
 services:
   #_=========================================================================_#
   #                                  APP                                      #
   #_=========================================================================_#
-
   app:
     build: .docker/php
     container_name: ${PROJECT_NAME:?'PROJECT_NAME is not set'}-app
