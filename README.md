@@ -12,6 +12,8 @@ It provides:
 
 ✅ Database management tools: **PHPMyAdmin** or **pgAdmin**
 
+✅ **Mailpit** as fake SMTP server
+
 ✅ A **Docker** environment for easy setup
 
 ✅ **Castor** as a task runner
@@ -20,7 +22,7 @@ It provides:
 
 - **Languages & Database**
 
-  [![PHP](https://img.shields.io/badge/PHP-8.2^-777BB4?logo=php)](https://www.php.net/) [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql)](https://www.mysql.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-316192?logo=postgresql)](https://www.postgresql.org/)
+  [![PHP](https://img.shields.io/badge/PHP-8.4.x-777BB4?logo=php)](https://www.php.net/) [![MySQL](https://img.shields.io/badge/MySQL-latest-4479A1?logo=mysql)](https://www.mysql.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-latest-316192?logo=postgresql)](https://www.postgresql.org/)
 
 - **Frameworks**
 
@@ -32,7 +34,7 @@ It provides:
 
 - **Tools**
 
-  ![Castor](https://img.shields.io/badge/Castor-latest-000) [![Docker](https://img.shields.io/badge/Docker-latest-0db7ed?logo=docker)](https://docs.docker.com/) ![PHPMyAdmin](https://img.shields.io/badge/PHPMyAdmin-latest-4479A1?logo=phpmyadmin) ![pgAdmin](https://img.shields.io/badge/pgAdmin-latest-000)
+  [![Castor](https://img.shields.io/badge/Castor-latest-000)](https://castor.jolicode.com/) [![Docker](https://img.shields.io/badge/Docker-latest-0db7ed?logo=docker)](https://docs.docker.com/) [![Mailpit](https://img.shields.io/badge/Mailpit-latest-000)](https://mailpit.axllent.org/) [![PHPMyAdmin](https://img.shields.io/badge/PHPMyAdmin-latest-4479A1?logo=phpmyadmin)](https://www.phpmyadmin.net/) [![pgAdmin](https://img.shields.io/badge/pgAdmin-latest-000)](https://www.pgadmin.org/)
 
 ## 📌 Requirements
 
@@ -50,6 +52,16 @@ Before using this template, ensure you have:
 
    ```sh
    castor project:init
+   ```
+
+4. **Adapt the Docker configuration** to your needs
+
+   Follow the instructions in the `compose.yml` file to configure the Docker environment.
+
+5. **Start the Docker Stack** with:
+
+   ```sh
+   castor docker:start
    ```
 
 ## 🤝 Contributing

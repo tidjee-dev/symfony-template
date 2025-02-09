@@ -1,0 +1,160 @@
+#_=========================================================================_#
+#?                 ONLY USE THESE SERVICES IN DEVELOPMENT!                  #
+#                                                                           #
+#            !!! NEVER EXPOSE THESE SERVICES IN PRODUCTION! !!!             #
+#_-------------------------------------------------------------------------_#
+#  Info: You can copy the MODEL.env file to .env and update the values.     #
+#  Info: `cp MODEL.env .env`                                                #
+#_=========================================================================_#
+services:
+  #_=========================================================================_#
+  #                                  APP                                      #
+  #_=========================================================================_#
+
+  app:
+    build: .docker/php
+    container_name: ${PROJECT_NAME:?'PROJECT_NAME is not set'}-app
+    restart: unless-stopped
+    networks:
+      - ${PROJECT_NAME:?'PROJECT_NAME is not set'}-network
+    ports:
+      - "${APP_PORT:?'APP_PORT is not set'}:80"
+    volumes:
+      - ./.docker/apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./app:/var/www
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # depends_on: # Uncomment depending on the database you want to use.
+    #   mysql:
+    #     condition: service_healthy
+    #   pgsql:
+    #     condition: service_healthy
+
+  #_=========================================================================_#
+  #                                 DATABASES                                 #
+  #_-------------------------------------------------------------------------_#
+  #  Uncomment the service to enable the database you want to use.            #
+  #? Remember to:                                                             #
+  #? - Uncomment the related volumes and tools related to the database.       #
+  #? - Update the .env file with the correct values.                          #
+  #_=========================================================================_#
+  # mysql:
+  #   image: mysql
+  #   container_name: ${PROJECT_NAME:?'PROJECT_NAME is not set'}-mysql
+  #   restart: unless-stopped
+  #   networks:
+  #     - ${PROJECT_NAME:?'PROJECT_NAME is not set'}-network
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?'MYSQL_ROOT_PASSWORD is not set'}
+  #     MYSQL_DATABASE: ${MYSQL_DATABASE:?'MYSQL_DATABASE is not set'}
+  #     MYSQL_USER: ${MYSQL_USER:?'MYSQL_USER is not set'}
+  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD:?'MYSQL_PASSWORD is not set'}
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #     - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 5
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+
+  # pgsql:
+  #   image: postgres
+  #   container_name: ${PROJECT_NAME:?'PROJECT_NAME is not set'}-pgsql
+  #   restart: unless-stopped
+  #   networks:
+  #     - ${PROJECT_NAME:?'PROJECT_NAME is not set'}-network
+  #   environment:
+  #     POSTGRES_DB: ${POSTGRES_DB:?'POSTGRES_DB is not set'}
+  #     POSTGRES_USER: ${POSTGRES_USER:?'POSTGRES_USER is not set'}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?'POSTGRES_PASSWORD is not set'}
+  #   volumes:
+  #     - pgsql_data:/var/lib/postgresql/data
+  #     - ./.docker/pgsql/pg_hba.conf:/etc/postgresql/12/main/pg_hba.conf
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 5
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+
+  #_=========================================================================_#
+  #                                   TOOLS                                   #
+  #_-------------------------------------------------------------------------_#
+  #  Uncomment the service to enable the tools you want to use.               #
+  #_=========================================================================_#
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: ${PROJECT_NAME:?'PROJECT_NAME is not set'}-phpmyadmin
+  #   restart: unless-stopped
+  #  networks:
+  #    - ${PROJECT_NAME:?'PROJECT_NAME is not set'}-network
+  #   ports:
+  #     - "${PHPMYADMIN_PORT}:80"
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: ${PROJECT_NAME:?'PROJECT_NAME is not set'}-pgadmin
+  #   restart: unless-stopped
+  #  networks:
+  #    - ${PROJECT_NAME:?'PROJECT_NAME is not set'}-network
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   ports:
+  #     - "${PGADMIN_PORT}:80"
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+
+  # mailpit:
+  #   image: axllent/mailpit
+  #   container_name: ${PROJECT_NAME:?'PROJECT_NAME is not set'}-mailpit
+  #   restart: unless-stopped
+  #  networks:
+  #    - ${PROJECT_NAME:?'PROJECT_NAME is not set'}-network
+  #   ports:
+  #     - "${MAILPIT_SMTP_PORT:?'MAILPIT_SMTP_PORT is not set'}:1025"
+  #     - "${MAILPIT_HTTP_PORT:?'MAILPIT_HTTP_PORT is not set'}:8025"
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+
+#_===========================================================================_#
+#                                   VOLUMES                                   #
+#_---------------------------------------------------------------------------_#
+#  Uncomment the volume related to the used database.                         #
+#_===========================================================================_#
+# volumes:
+#   mysql_data:
+#     driver: local
+#   pgsql_data:
+#     driver: local
+
+#_===========================================================================_#
+#                                   NETWORKS                                  #
+#_===========================================================================_#
+networks:
+  ${PROJECT_NAME:?'PROJECT_NAME is not set'}-network:
+    driver: bridge
