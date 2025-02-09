@@ -1,4 +1,4 @@
-# Tidjee's Symfony Template
+# Tidjee's Symfony Template [WIP]
 
 ## 📝 Description
 
