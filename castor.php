@@ -3,8 +3,34 @@
 use function Castor\fs;
 use function Castor\io;
 use function Castor\run;
-
 use Castor\Attribute\AsTask;
+use function Castor\load_dot_env;
+
+
+/**
+ * Load environment variables from a .env file.
+ *
+ * This function loads environment variables from a .env file into an array.
+ *
+ * To retrieve the value of a specific environment variable, you can use the array syntax:
+ *     $varName = loadEnv(__DIR__.'/path/to/.env/file')['VAR_NAME'];
+ *
+ * @param string $path The path to the .env file.
+ *
+ * @return array<string, string> The environment variables loaded from the file.
+ *
+ * @throws RuntimeException If the file does not exist.
+ */
+function loadEnv(string $envPath): array
+{
+    if (!fs()->exists($envPath)) {
+        throw new RuntimeException(sprintf('The file "%s" does not exist.', $envPath));
+    }
+
+    $env = load_dot_env($envPath);
+
+    return $env;
+}
 
 /**
  ** Project
@@ -83,7 +109,7 @@ function symfonyInit(): void
         fs()->touch('README.md');
         fs()->appendToFile('README.md', '# ' . basename(getcwd()) . PHP_EOL);
     } else {
-        fs()->copy('README.md', 'docs/template/README.md');
+        fs()->copy('README.md', 'docs/templates/README.md');
         fs()->dumpFile('README.md', '# ' . basename(getcwd()) . PHP_EOL);
     }
 
@@ -137,6 +163,33 @@ function dockerStart(): void
     run('docker compose --env-file .env.docker up -d');
     io()->newLine();
     io()->success('Docker Stack started');
+
+    $app_port = loadEnv(__DIR__ . '/.env.docker')['APP_PORT'];
+    $phpma_port = loadEnv(__DIR__ . '/.env.docker')['PHPMYADMIN_PORT'];
+    $pgadmin_port = loadEnv(__DIR__ . '/.env.docker')['PGADMIN_PORT'];
+    $mailpit_port = loadEnv(__DIR__ . '/.env.docker')['MAILPIT_HTTP_PORT'];
+
+    $msg = [];
+
+    if ($app_port) {
+        $app_msg = 'You can now access your Symfony application at http://localhost:' . $app_port;
+        $msg[] = $app_msg;
+    }
+    if ($phpma_port) {
+        $phpma_msg = 'You can now access PHPMyAdmin at http://localhost:' . $phpma_port;
+        $msg[] = $phpma_msg;
+    }
+    if ($pgadmin_port) {
+        $pgadmin_msg = 'You can now access PgAdmin at http://localhost:' . $pgadmin_port;
+        $msg[] = $pgadmin_msg;
+    }
+
+    if ($mailpit_port) {
+        $mailpit_msg = 'You can now access Mailpit at http://localhost:' . $mailpit_port;
+        $msg[] = $mailpit_msg;
+    }
+
+    io()->info($msg);
 }
 
 /**
@@ -165,6 +218,33 @@ function dockerRestart(): void
     run('docker compose --env-file .env.docker restart');
     io()->newLine();
     io()->success('Docker Stack restarted');
+
+    $app_port = loadEnv(__DIR__ . '/.env.docker')['APP_PORT'];
+    $phpma_port = loadEnv(__DIR__ . '/.env.docker')['PHPMYADMIN_PORT'];
+    $pgadmin_port = loadEnv(__DIR__ . '/.env.docker')['PGADMIN_PORT'];
+    $mailpit_port = loadEnv(__DIR__ . '/.env.docker')['MAILPIT_HTTP_PORT'];
+
+    $msg = [];
+
+    if ($app_port) {
+        $app_msg = 'You can now access your Symfony application at http://localhost:' . $app_port;
+        $msg[] = $app_msg;
+    }
+    if ($phpma_port) {
+        $phpma_msg = 'You can now access PHPMyAdmin at http://localhost:' . $phpma_port;
+        $msg[] = $phpma_msg;
+    }
+    if ($pgadmin_port) {
+        $pgadmin_msg = 'You can now access PgAdmin at http://localhost:' . $pgadmin_port;
+        $msg[] = $pgadmin_msg;
+    }
+
+    if ($mailpit_port) {
+        $mailpit_msg = 'You can now access Mailpit at http://localhost:' . $mailpit_port;
+        $msg[] = $mailpit_msg;
+    }
+
+    io()->info($msg);
 }
 
 /**
