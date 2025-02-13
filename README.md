@@ -2,7 +2,11 @@
 
 ## 📝 Description
 
-This repository is a boilerplate for quickly setting up a new Symfony project with a ready-to-use configuration.
+This repository is a boilerplate for quickly setting up a new Symfony project with a ready-to-use configuration in dev environment.
+
+> [!WARNING]
+> This template is for development purposes only (for now).
+> It is not intended for production use.
 
 It provides:
 
@@ -32,21 +36,26 @@ It provides:
 
   [![Apache](https://img.shields.io/badge/Apache-2.4-D42029?logo=apache)](https://httpd.apache.org/)
 
+- **Mail Server**
+
+  [![Mailpit](https://img.shields.io/badge/Mailpit-latest-000)](https://mailpit.axllent.org/)
+
 - **Tools**
 
-  [![Castor](https://img.shields.io/badge/Castor-latest-000)](https://castor.jolicode.com/) [![Docker](https://img.shields.io/badge/Docker-latest-0db7ed?logo=docker)](https://docs.docker.com/) [![Mailpit](https://img.shields.io/badge/Mailpit-latest-000)](https://mailpit.axllent.org/) [![PHPMyAdmin](https://img.shields.io/badge/PHPMyAdmin-latest-4479A1?logo=phpmyadmin)](https://www.phpmyadmin.net/) [![pgAdmin](https://img.shields.io/badge/pgAdmin-latest-000)](https://www.pgadmin.org/)
+  [![Castor](https://img.shields.io/badge/Castor-latest-000)](https://castor.jolicode.com/) [![Docker](https://img.shields.io/badge/Docker-latest-0db7ed?logo=docker)](https://docs.docker.com/) [![PHPMyAdmin](https://img.shields.io/badge/PHPMyAdmin-latest-4479A1?logo=phpmyadmin)](https://www.phpmyadmin.net/) [![pgAdmin](https://img.shields.io/badge/pgAdmin-latest-000)](https://www.pgadmin.org/)
 
 ## 📌 Requirements
 
 Before using this template, ensure you have:
 
-- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
 - [PHP](https://www.php.net/) installed
 - [Castor](https://castor.jolicode.com/) installed
+- [Docker](https://docs.docker.com/engine/install/) & [Docker Compose](https://docs.docker.com/compose/)
 
 ## 🛠️ How to Use
 
 1. **Create** a new Symfony project using this template
+  ![use this template](docs/template/assets/image.png)
 2. **Clone** your newly created repository
 3. **Initialize the project** with:
 
