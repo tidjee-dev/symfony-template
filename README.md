@@ -1,4 +1,6 @@
-# Tidjee's Symfony Template [WIP]
+# ![Work in progress](https://img.shields.io/badge/Work%20in%20Progress-red.svg) Tidjee's Symfony Template
+
+![GitHub stars](https://img.shields.io/github/stars/tidjee-dev/symfony-template?style=social) [![GitHub forks](https://img.shields.io/github/forks/tidjee-dev/symfony-template?style)](https://github.com/tidjee-dev/symfony-template/fork) [![GitHub last commit](https://img.shields.io/github/last-commit/tidjee-dev/symfony-template)](https://github.com/tidjee-dev/symfony-template/commits/main) [![GitHub issues](https://img.shields.io/github/issues/tidjee-dev/symfony-template)](https://github.com/tidjee-dev/symfony-template/issues) ![GitHub repo size](https://img.shields.io/github/repo-size/tidjee-dev/symfony-template) [![Use this template](https://img.shields.io/badge/Use%20this%20template-blueviolet?logo=github)](https://github.com/tidjee-dev/symfony-template/generate)
 
 ## 📝 Description
 
@@ -34,7 +36,7 @@ It provides:
 
 - **Web Server**
 
-  [![Apache](https://img.shields.io/badge/Apache-2.4-D42029?logo=apache)](https://httpd.apache.org/)
+  [![Apache](<https://img.shields.io/badge/Apache-latest_(2.4)-D42029?logo=apache>)](https://httpd.apache.org/)
 
 - **Mail Server**
 
@@ -49,13 +51,13 @@ It provides:
 Before using this template, ensure you have:
 
 - [PHP](https://www.php.net/) installed
-- [Castor](https://castor.jolicode.com/) installed
+- [Castor](https://castor.jolicode.com/installation) installed
 - [Docker](https://docs.docker.com/engine/install/) & [Docker Compose](https://docs.docker.com/compose/)
 
 ## 🛠️ How to Use
 
 1. **Create** a new Symfony project using this template
-  ![use this template](/docs/template/assets/image.png)
+   ![use this template](/docs/template/assets/image.png)
 2. **Clone** your newly created repository
 3. **Initialize the project** with:
 
