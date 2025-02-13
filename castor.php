@@ -83,7 +83,7 @@ function symfonyInit(): void
         fs()->touch('README.md');
         fs()->appendToFile('README.md', '# ' . basename(getcwd()) . PHP_EOL);
     } else {
-        fs()->copy('README.md', 'docs/templates/README.md');
+        fs()->copy('README.md', 'docs/template/README.md');
         fs()->dumpFile('README.md', '# ' . basename(getcwd()) . PHP_EOL);
     }
 
