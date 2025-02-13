@@ -6,38 +6,27 @@ use function Castor\run;
 
 use Castor\Attribute\AsTask;
 
-/*
- * Project
+/**
+ ** Project
  */
 
 /**
- * Creates a new Symfony project in the current directory.
+ * Creates a new Symfony project.
  *
- * This task performs the following steps:
- * 1. It creates a new Symfony project using the `composer create-project` command.
- * 2. It initializes Git in the project directory (if needed).
- * 3. It creates a web application by installing the `webapp` package (if needed).
- * 4. It creates a `README.md` file if it doesn't already exist.
- *
- * The task will ask you the following questions:
- * 1. What version of Symfony do you want to use? (default: latest)
- * 2. What stability do you want to use? (default: stable)
- * 3. Do you want to initialize Git in the project? (default: yes)
- * 4. Do you want to make the first commit? (default: yes)
- * 5. Do you want to create a web application? (default: yes)
- *
- * @see https://symfony.com/doc/current/setup.html
+ * This task initializes a new Symfony project in the current directory by using the Symfony skeleton.
+ * It optionally sets up Git, Docker, and configures a basic web application structure.
  */
 #[AsTask(description: 'Create new Symfony project', aliases: ['project:init'], namespace: 'project')]
 function symfonyInit(): void
 {
-    io()->title('Creating new Symfony project');
+    io()->title('Symfony new project wizard');
 
     if (!fs()->exists('composer.json')) {
         io()->section('Creating a new Symfony project in the current directory');
         $sf_version = io()->ask('What version of Symfony do you want to use? (default: latest)', '');
         $stability = io()->ask('What stability do you want to use?', 'stable');
         run('composer create-project "symfony/skeleton ' . $sf_version . '" tmp --stability="' . $stability . '" --prefer-dist --no-progress --no-interaction --no-install');
+
         run('cp -Rp tmp/. .');
         run('rm -Rf tmp/');
         run('composer install --prefer-dist --no-progress --no-interaction');
@@ -50,13 +39,22 @@ function symfonyInit(): void
         $git = io()->confirm('Do you want to initialize Git in the project? ', false);
         if ($git) {
             run('git init');
-            $remoteUrl = io()->ask('What is the remote repository URL?');
-            run('git remote add origin ' . $remoteUrl);
-            io()->newLine();
-            io()->info([
-                'Git initialized and remote repository added.',
-                'You can now push your code to the remote repository.'
-            ]);
+            $remote = io()->confirm('Do you want to add a remote repository?', false);
+            if ($remote) {
+                $remoteUrl = io()->ask('What is the remote repository URL?');
+                run('git remote add origin ' . $remoteUrl);
+                io()->newLine();
+                io()->info([
+                    'Git initialized and remote repository added.',
+                    'You can now push your code to the remote repository.'
+                ]);
+            } else {
+                io()->newLine();
+                io()->info([
+                    'Git initialized.',
+                    'You can now add your files and make the first commit.'
+                ]);
+            }
 
             $firstCommit = io()->confirm('Do you want to make the first commit?', false);
             if ($firstCommit) {
@@ -70,6 +68,13 @@ function symfonyInit(): void
         io()->section('Configuring project as a web application');
         $webapp = io()->confirm('Do you want to create a web application?', false);
         if ($webapp) {
+            if (!fs()->exists('compose.yml') || !fs()->exists('.docker')) {
+                $docker = io()->confirm('Do you want to use Docker?', false);
+                if ($docker) {
+                    io()->section('Creating Docker configuration');
+                    run('composer config --json extra.symfony.docker true');
+                }
+            }
             run('composer require webapp --no-progress --no-interaction');
         }
     }
@@ -88,17 +93,24 @@ function symfonyInit(): void
     io()->info([
         "Run `castor` to see all available tasks",
     ]);
+    io()->text([
+        "To use Docker:",
+        "1. Modify the compose.yml file to setup your Docker stack",
+        "2. Run `castor docker:start` to start the Docker stack",
+    ]);
+    io()->comment([
+        "Fell free to delete compose.yml and .docker/ folder if you don't want to use Docker",
+    ]);
 }
 
-/*
- * Composer
+/**
+ ** Composer
  */
 
 /**
- * Install composer dependencies.
+ * Installs composer dependencies.
  *
- * This task runs the 'composer install' command to install
- * all dependencies defined in the composer.json file.
+ * This task runs the `composer install` command to install all dependencies defined in the composer.json file.
  */
 #[AsTask(description: 'Install composer dependencies', aliases: ['comp:install'], namespace: 'composer')]
 function composerInstall(): void
@@ -109,84 +121,84 @@ function composerInstall(): void
     io()->success('Composer dependencies installed');
 }
 
-/*
- * Docker
+/**
+ ** Docker
  */
 
 /**
- * Start Docker Stack
+ * Starts the Docker stack.
  *
- * This task runs the 'docker compose up -d' command to start
- * all services defined in the compose.yml file in
- * detached mode.
+ * This task starts Docker containers defined in the `compose.yml` file using the environment file `.env.docker`.
  */
 #[AsTask(description: 'Start Docker Stack', aliases: ['docker:start'], namespace: 'docker')]
 function dockerStart(): void
 {
     io()->title('Starting Docker Stack');
-    run('docker compose up -d');
+    run('docker compose --env-file .env.docker up -d');
     io()->newLine();
     io()->success('Docker Stack started');
 }
 
 /**
- * Stop all services defined in the compose.yml file.
+ * Stops the Docker stack.
  *
- * This task is useful to stop all services when you are done with
- * development or testing.
+ * This task stops the running Docker containers using the `compose.yml` file and the `.env.docker` environment file.
  */
 #[AsTask(description: 'Stop Docker Stack', aliases: ['docker:stop'], namespace: 'docker')]
 function dockerStop(): void
 {
     io()->title('Stopping Docker Stack');
-    run('docker compose stop');
+    run('docker compose --env-file .env.docker stop');
     io()->newLine();
     io()->success('Docker Stack stopped');
 }
 
 /**
- * Restart all services defined in the compose.yml file.
+ * Restarts the Docker stack.
  *
- * This task is useful to restart all services when you have made
- * changes to the compose.yml file.
+ * This task restarts the Docker containers using the `compose.yml` file and the `.env.docker` environment file.
  */
 #[AsTask(description: 'Restart Docker Stack', aliases: ['docker:restart'], namespace: 'docker')]
 function dockerRestart(): void
 {
     io()->title('Restarting Docker Stack');
-    run('docker compose restart');
+    run('docker compose --env-file .env.docker restart');
     io()->newLine();
     io()->success('Docker Stack restarted');
 }
 
 /**
- * Remove all services defined in the compose.yml file.
+ * Removes the Docker stack.
  *
- * This task is useful to remove all services when you are done with
- * development or testing.
+ * This task stops and removes all Docker services defined in the `compose.yml` file.
+ * Optionally, it can also remove associated volumes.
  */
 #[AsTask(description: 'Remove Docker Stack', aliases: ['docker:remove'], namespace: 'docker')]
 function dockerRemove(): void
 {
     io()->title('Removing Docker Stack');
     io()->info('This will remove all services defined in the compose.yml file.');
-    $confirm = io()->confirm('Are you sure you want to remove the Docker Stack?', false);
+    $confirm = io()->confirm('Are you sure you want to remove this Docker Stack?', false);
     if ($confirm) {
-        run('docker compose down');
-        io()->newLine();
-        io()->success('Docker Stack removed');
+        $volumes = io()->confirm('Do you want to remove volumes too?', false);
+        if ($volumes) {
+            run('docker compose --env-file .env.docker down --volumes');
+            io()->newLine();
+            io()->success('Docker Stack and volumes removed');
+        } else {
+            run('docker compose --env-file .env.docker down');
+            io()->newLine();
+            io()->success('Docker Stack removed');
+        }
     } else {
         io()->warning('Docker Stack not removed');
     }
 }
 
 /**
- * Remove all unused Docker images, containers and networks.
+ * Cleans the Docker environment.
  *
- * This task is useful when you want to clean up the Docker environment
- * after you are done with development or testing.
- *
- * @see https://docs.docker.com/engine/reference/commandline/system_prune/
+ * This task removes all unused Docker images, containers, networks, and optionally volumes.
  */
 #[AsTask(description: 'Clean Docker Environment', aliases: ['docker:clean'], namespace: 'docker')]
 function dockerClean(): void
@@ -204,58 +216,14 @@ function dockerClean(): void
     }
 }
 
-/*
- * Symfony
+/**
+ ** Symfony
  */
 
 /**
- * Run Symfony server.
+ * Clears the Symfony cache.
  *
- * This task runs the `symfony serve -d` command to start the Symfony server.
- * The `-d` option runs the server in detached mode.
- *
- * @see https://symfony.com/doc/current/setup/symfony_server.html
- */
-#[AsTask(description: 'Start Symfony Server', aliases: ['sf:srv:start'], namespace: 'symfony')]
-function serverStart(): void
-{
-    io()->title('Starting Symfony Server');
-    run('symfony serve -d');
-}
-
-/**
- * Stop Symfony server.
- *
- * This task runs the `symfony server:stop` command to stop the Symfony server.
- *
- * @see https://symfony.com/doc/current/setup/symfony_server.html
- */
-#[AsTask(description: 'Stop Symfony Server', aliases: ['sf:srv:stop'], namespace: 'symfony')]
-function serverStop(): void
-{
-    io()->title('Stopping Symfony Server');
-    run('symfony server:stop');
-}
-
-/**
- * Show Symfony server log.
- *
- * This task runs the `symfony server:log` command to show the Symfony server log.
- *
- * @see https://symfony.com/doc/current/setup/symfony_server.html
- */
-#[AsTask(description: 'Show Symfony Server Log', aliases: ['sf:srv:log'], namespace: 'symfony')]
-function serverLog(): void
-{
-    io()->title('Showing Symfony Server Log');
-    run('symfony server:log');
-}
-
-/**
- * Clear Symfony cache.
- *
- * This task runs the `symfony console cache:clear` command to clear the
- * Symfony cache.
+ * This task runs the Symfony console command to clear the application cache.
  */
 #[AsTask(description: 'Clear Cache', aliases: ['sf:cc'], namespace: 'symfony')]
 function clearCache(): void
@@ -264,17 +232,14 @@ function clearCache(): void
     run('symfony console cache:clear');
 }
 
-/*
- * Maker Bundle
+/**
+ ** Maker Bundle
  */
 
 /**
- * Installs the Maker Bundle.
+ * Installs the Symfony Maker Bundle.
  *
- * This task runs the `composer require --dev symfony/maker-bundle` command to install
- * the Maker Bundle.
- *
- * @see https://symfony.com/doc/current/bundles/SymfonyMakerBundle/index.html
+ * This task installs the Maker Bundle to assist in code generation during development.
  */
 #[AsTask(description: 'Install Maker Bundle', aliases: ['make:install'], namespace: 'maker')]
 function installMakerBundle(): void
@@ -286,10 +251,9 @@ function installMakerBundle(): void
 }
 
 /**
- * Create a new Symfony Controller.
+ * Creates a new Controller.
  *
- * This task runs the `symfony console make:controller` command to generate
- * a new controller class and its associated template in the Symfony application.
+ * This task invokes the Symfony console command to generate a new controller.
  */
 #[AsTask(description: 'Create new Controller', aliases: ['make:controller'], namespace: 'maker')]
 function makeController(): void
@@ -299,10 +263,9 @@ function makeController(): void
 }
 
 /**
- * Create a new Symfony User.
+ * Creates a new User.
  *
- * This task runs the `symfony console make:user` command to generate
- * a new User Entity and its associated repository in the Symfony application.
+ * This task invokes the Symfony console command to generate a new user class.
  */
 #[AsTask(description: 'Create new User', aliases: ['make:user'], namespace: 'maker')]
 function makeUser(): void
@@ -312,10 +275,9 @@ function makeUser(): void
 }
 
 /**
- * Create a new Symfony Entity.
+ * Creates a new Entity.
  *
- * This task runs the `symfony console make:entity` command to generate
- * a new Entity and its associated repository in the Symfony application.
+ * This task invokes the Symfony console command to generate a new entity class.
  */
 #[AsTask(description: 'Create new Entity', aliases: ['make:entity'], namespace: 'maker')]
 function makeEntity(): void
@@ -325,10 +287,9 @@ function makeEntity(): void
 }
 
 /**
- * Create a new Symfony Form.
+ * Creates a new Form.
  *
- * This task runs the `symfony console make:form` command to generate
- * a new Form in the Symfony application.
+ * This task invokes the Symfony console command to generate a new form class.
  */
 #[AsTask(description: 'Create new Form', aliases: ['make:form'], namespace: 'maker')]
 function makeForm(): void
@@ -337,17 +298,14 @@ function makeForm(): void
     run('symfony console make:form');
 }
 
-/*
- * DB
+/**
+ ** Database
  */
 
 /**
- * Create a new database.
+ * Creates a new database.
  *
- * This task runs the `symfony console doctrine:database:create` command to
- * create a new database.
- *
- * @see https://symfony.com/doc/current/doctrine.html#creating-the-database
+ * This task creates the database if it does not exist, using Symfony's Doctrine command.
  */
 #[AsTask(description: 'Create new Database', aliases: ['db:create'], namespace: 'database')]
 function createDatabase(): void
@@ -357,12 +315,9 @@ function createDatabase(): void
 }
 
 /**
- * Drop the current database.
+ * Drops the current database.
  *
- * This task runs the `symfony console doctrine:database:drop --force` command to
- * drop the current database.
- *
- * @see https://symfony.com/doc/current/doctrine.html#drop-the-database
+ * This task forcefully drops the database using Symfony's Doctrine command.
  */
 #[AsTask(description: 'Drop Database', aliases: ['db:drop'], namespace: 'database')]
 function dropDatabase(): void
@@ -372,12 +327,9 @@ function dropDatabase(): void
 }
 
 /**
- * Create a new Doctrine Migration.
+ * Creates a new migration.
  *
- * This task runs the `symfony console make:migration` command to create
- * a new Doctrine migration.
- *
- * @see https://symfony.com/doc/current/doctrine.html#migrations-creating-the-database-tables-schema
+ * This task generates a new migration file based on the current mapping information.
  */
 #[AsTask(description: 'Create new Migration', aliases: ['db:migration'], namespace: 'database')]
 function createMigration(): void
@@ -387,12 +339,9 @@ function createMigration(): void
 }
 
 /**
- * Run all available Doctrine migrations to update the database to the latest version.
+ * Runs pending migrations.
  *
- * This task runs the `symfony console doctrine:migrations:migrate` command to execute
- * all available Doctrine migrations to update the database to the latest version.
- *
- * @see https://symfony.com/doc/current/doctrine.html#migrations-creating-the-database-tables-schema
+ * This task applies any pending Doctrine migrations.
  */
 #[AsTask(description: 'Run Migrations', aliases: ['db:migrate'], namespace: 'database')]
 function runMigrations(): void
@@ -402,15 +351,10 @@ function runMigrations(): void
 }
 
 /**
- * Initialize the database by creating it if it does not exist,
- * generating a new migration, and applying all migrations.
+ * Initializes the database.
  *
- * This task performs the following commands:
- * 1. `symfony console doctrine:database:create --if-not-exists` to create the database if it doesn't exist.
- * 2. `symfony console make:migration` to create a new Doctrine migration.
- * 3. `symfony console doctrine:migrations:migrate` to apply all available migrations.
- *
- * @see https://symfony.com/doc/current/doctrine.html
+ * This task creates the database (if it doesn't exist), creates a migration,
+ * applies migrations, and optionally loads fixtures.
  */
 #[AsTask(description: 'Initialize Database', aliases: ['db:init'], namespace: 'database')]
 function initializeDatabase(): void
@@ -428,15 +372,10 @@ function initializeDatabase(): void
 }
 
 /**
- * Reset the current database.
+ * Resets the database.
  *
- * This task runs the following commands to reset the current database:
- *
- * 1. `symfony console doctrine:database:drop --force` to drop the current database.
- * 2. `symfony console doctrine:database:create` to create a new database.
- * 3. `symfony console doctrine:migrations:migrate` to apply all migrations.
- *
- * @see https://symfony.com/doc/current/doctrine.html#resetting-the-database
+ * This task drops the current database, recreates it, applies migrations,
+ * and optionally loads fixtures.
  */
 #[AsTask(description: 'Reset Database', aliases: ['db:reset'], namespace: 'database')]
 function resetDatabase(): void
@@ -453,19 +392,15 @@ function resetDatabase(): void
     io()->success('Database reset');
 }
 
-/*
- * Fixtures
+/**
+ ** Fixtures
  */
 
 /**
- * Installs the Doctrine Fixtures Bundle and asks if you want to install FakerPHP.
+ * Installs the Doctrine Fixtures Bundle.
  *
- * If you choose to install FakerPHP, it will ask you where you want to create your fixtures.
- * If the file does not exist, it will create it with a sample content.
- * If the file already exists, it will inform you that you can edit it to add your fixtures.
- *
- * @see https://symfony.com/doc/current/bundles/DoctrineFixturesBundle/index.html
- * @see https://fakerphp.org/
+ * This task installs the fixtures bundle for loading test data and, optionally,
+ * installs FakerPHP to assist in generating fake data.
  */
 #[AsTask(description: 'Install Fixtures Bundle', aliases: ['fixt:install'], namespace: 'fixtures')]
 function installFixtures(): void
@@ -524,9 +459,9 @@ function installFixtures(): void
 }
 
 /**
- * Load fixtures from the App\DataFixtures namespace to the database.
+ * Loads database fixtures.
  *
- * @see https://symfony.com/doc/current/bundles/DoctrineFixturesBundle/index.html
+ * This task runs the Symfony console command to load fixtures into the database.
  */
 #[AsTask(description: 'Load Fixtures', aliases: ['fixt:load'], namespace: 'fixtures')]
 function loadFixtures(): void
