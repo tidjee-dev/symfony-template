@@ -55,7 +55,7 @@ Before using this template, ensure you have:
 ## 🛠️ How to Use
 
 1. **Create** a new Symfony project using this template
-  ![use this template](docs/template/assets/image.png)
+  ![use this template](docs/templates/assets/image.png)
 2. **Clone** your newly created repository
 3. **Initialize the project** with:
 
