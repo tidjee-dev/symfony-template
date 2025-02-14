@@ -60,6 +60,8 @@ function symfonyInit(): void
 
     run('composer config --json extra.symfony.docker false');
 
+    run('cp MODEL.env .env.docker');
+
     if (!fs()->exists('.git')) {
         io()->section('Initializing Git');
         $git = io()->confirm('Do you want to initialize Git in the project? ', false);
