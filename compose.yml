@@ -31,8 +31,8 @@ services:
         max-size: "10m"
         max-file: "3"
     # depends_on: # (Un)comment depending on the database you want to use.
-    #   # - mysql
-    #   # - pgsql
+    #   - mysql
+    #   - pgsql
 
   #_===========================================================================_#
   #                                  DATABASES                                  #
@@ -142,9 +142,9 @@ services:
 #  (Un)comment the volume related to the used database.                         #
 #_=============================================================================_#
 # volumes:
-#   # mysql_data: #? Uncomment if use of MySQL is enabled
-#   #   driver: local
-#   # pgsql_data: #? Uncomment if use of PostgreSQL is enabled
-#   #   driver: local
-#   # pgadmin_data: #? Uncomment if use of PostgreSQL is enabled
-#   #   driver: local
+#   mysql_data: #? Uncomment if use of MySQL is enabled
+#     driver: local
+#   pgsql_data: #? Uncomment if use of PostgreSQL is enabled
+#     driver: local
+#   pgadmin_data: #? Uncomment if use of PostgreSQL is enabled
+#     driver: local
