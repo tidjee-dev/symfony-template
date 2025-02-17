@@ -20,19 +20,9 @@ services:
     volumes:
       - ./.docker/apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
       - .:/var/www
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${APP_PORT}"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
     # depends_on: # (Un)comment depending on the database you want to use.
-    #   - mysql
-    #   - pgsql
+      # - mysql
+      # - pgsql
 
   #_===========================================================================_#
   #                                  DATABASES                                  #
@@ -55,16 +45,6 @@ services:
   #   volumes:
   #     - mysql_data:/var/lib/mysql
   #     - .docker/mysql/mysql-init.sh:/docker-entrypoint-initdb.d/mysql-init.sh:ro
-  #   healthcheck:
-  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-  #     interval: 5s
-  #     timeout: 3s
-  #     retries: 5
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "10m"
-  #       max-file: "3"
 
   # pgsql:
   #   image: postgres
@@ -77,16 +57,6 @@ services:
   #   volumes:
   #     - pgsql_data:/var/lib/postgresql/data
   #     - ./.docker/pgsql/pgsql-init.sh:/docker-entrypoint-initdb.d/pgsql-init.sh:ro
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-  #     interval: 5s
-  #     timeout: 3s
-  #     retries: 5
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "10m"
-  #       max-file: "3"
 
   #_===========================================================================_#
   #                                    TOOLS                                    #
@@ -101,11 +71,6 @@ services:
   #     - "${PHPMYADMIN_PORT}:80"
   #   environment:
   #     - PMA_HOST=mysql
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "10m"
-  #       max-file: "3"
 
   # pgadmin: #? Uncomment if use of PostgreSQL is enabled
   #   image: dpage/pgadmin4
@@ -118,11 +83,6 @@ services:
   #     - "${PGADMIN_PORT}:80"
   #   volumes:
   #     - pgadmin_data:/var/lib/pgadmin
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "10m"
-  #       max-file: "3"
 
   # mailpit:
   #   image: axllent/mailpit
@@ -131,20 +91,15 @@ services:
   #   ports:
   #     - "${MAILPIT_SMTP_PORT:?'MAILPIT_SMTP_PORT is not set'}:1025"
   #     - "${MAILPIT_HTTP_PORT:?'MAILPIT_HTTP_PORT is not set'}:8025"
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "10m"
-  #       max-file: "3"
 #_=============================================================================_#
 #                                    VOLUMES                                    #
 #_-----------------------------------------------------------------------------_#
 #  (Un)comment the volume related to the used database.                         #
 #_=============================================================================_#
 # volumes:
-#   mysql_data: #? Uncomment if use of MySQL is enabled
-#     driver: local
-#   pgsql_data: #? Uncomment if use of PostgreSQL is enabled
-#     driver: local
-#   pgadmin_data: #? Uncomment if use of PostgreSQL is enabled
-#     driver: local
+  # mysql_data: #? Uncomment if use of MySQL is enabled
+  #   driver: local
+  # pgsql_data: #? Uncomment if use of PostgreSQL is enabled
+  #   driver: local
+  # pgadmin_data: #? Uncomment if use of PostgreSQL is enabled
+  #   driver: local
