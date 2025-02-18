@@ -496,45 +496,6 @@ function installFixtures(): void
         io()->section('Installing FakerPHP');
         run('composer require --dev fakerphp/faker');
 
-        io()->newLine();
-        $path = io()->ask('Where do you want to create your fixtures?', 'src/DataFixtures');
-
-        if (!fs()->exists($path . '/AppFixtures.php')) {
-            fs()->mkdir($path);
-            fs()->touch($path . '/AppFixtures.php');
-
-            $fixturesFileContent = <<<'EOF'
-            <?php
-
-            namespace App\DataFixtures;
-
-            use Faker\Factory as Factory;
-            use Doctrine\Persistence\ObjectManager;
-            use Doctrine\Bundle\FixturesBundle\Fixture;
-
-            class AppFixtures extends Fixture
-            {
-                public function load(ObjectManager $manager): void
-                {
-                    $faker = Factory::create('fr_FR');
-                    // ...
-                }
-            }
-            EOF;
-
-            fs()->appendToFile($path . '/AppFixtures.php', $fixturesFileContent);
-            io()->newLine();
-            io()->info([
-                '`' . $path . '/AppFixtures.php` created.',
-                'Edit this file to add your fixtures.'
-            ]);
-        } else {
-            io()->newLine();
-            io()->info([
-                '`' . $path . '/AppFixtures.php` already exists.',
-                'Edit this file to add your fixtures.'
-            ]);
-        }
         io()->success('FakerPHP installed');
     }
 }
