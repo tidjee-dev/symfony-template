@@ -379,7 +379,6 @@ function makeForm(): void
     io()->title('Creating new Form');
     run('symfony console make:form');
 }
-
 /**
  ** Database
  */
@@ -405,7 +404,7 @@ function createDatabase(): void
 function dropDatabase(): void
 {
     io()->title('Dropping Database');
-    run('symfony console doctrine:database:drop --force');
+    run('symfony console doctrine:database:drop --force --if-exists');
 }
 
 /**
@@ -463,8 +462,8 @@ function initializeDatabase(): void
 function resetDatabase(): void
 {
     io()->title('Resetting Database');
-    run('symfony console doctrine:database:drop --force');
-    run('symfony console doctrine:database:create');
+    run('symfony console doctrine:database:drop --force --if-exists');
+    run('symfony console doctrine:database:create --if-not-exists');
     run('symfony console doctrine:migrations:migrate');
     $fixtures = io()->ask('Would you like to load fixtures?', 'y');
     if ($fixtures === 'y') {
