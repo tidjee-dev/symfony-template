@@ -14,7 +14,7 @@ It provides:
 
 ✅ An **Apache web server**
 
-✅ Support for **PostgreSQL** and **MySQL** databases
+✅ Support for **PostgreSQL**, **MySQL** or **SQLite** databases
 
 ✅ Database management tools: **PHPMyAdmin** or **pgAdmin**
 
@@ -28,7 +28,7 @@ It provides:
 
 - **Languages & Database**
 
-  [![PHP](https://img.shields.io/badge/PHP-8.4.x-777BB4?logo=php)](https://www.php.net/) [![MySQL](https://img.shields.io/badge/MySQL-latest-4479A1?logo=mysql)](https://www.mysql.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-latest-316192?logo=postgresql)](https://www.postgresql.org/)
+  [![PHP](https://img.shields.io/badge/PHP-8.4.x-777BB4?logo=php)](https://www.php.net/) [![MySQL](https://img.shields.io/badge/MySQL-latest-4479A1?logo=mysql)](https://www.mysql.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-latest-316192?logo=postgresql)](https://www.postgresql.org/) [![SQLite](https://img.shields.io/badge/SQLite-latest-003B57?logo=sqlite)](https://www.sqlite.org/)
 
 - **Frameworks**
 

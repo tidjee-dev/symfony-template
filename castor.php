@@ -17,7 +17,7 @@ use function Castor\load_dot_env;
  *
  * @param string $path The path to the .env file.
  *
- * @return array<string, string> The environment variables loaded from the file.
+ * @return array<string, string|number|bool|null> The environment variables loaded from the file.
  *
  * @throws RuntimeException If the file does not exist.
  */
@@ -30,6 +30,26 @@ function loadEnv(string $envPath): array
     $env = load_dot_env($envPath);
 
     return $env;
+}
+
+/**
+ * Shows the environment variables loaded from a .env file.
+ *
+ * This task loads a .env file and prints out the environment variables loaded from it.
+ *
+ * @example
+ *     castor .env:show
+ */
+#[AsTask(description: 'Show .env variables', aliases: ['env:show'], namespace: 'env')]
+function showEnv(): void
+{
+    io()->title('Show .env variables');
+
+    $envPath = io()->ask('Enter the path to the .env file', '.env');
+
+    $env = loadEnv(__DIR__ . '/' . $envPath);
+
+    print_r($env);
 }
 
 /**
@@ -379,6 +399,7 @@ function makeForm(): void
     io()->title('Creating new Form');
     run('symfony console make:form');
 }
+
 /**
  ** Database
  */
@@ -462,15 +483,27 @@ function initializeDatabase(): void
 function resetDatabase(): void
 {
     io()->title('Resetting Database');
-    run('symfony console doctrine:database:drop --force --if-exists');
-    run('symfony console doctrine:database:create --if-not-exists');
-    run('symfony console doctrine:migrations:migrate');
-    $fixtures = io()->ask('Would you like to load fixtures?', 'y');
-    if ($fixtures === 'y') {
-        loadFixtures();
+    $confirm = io()->confirm('Are you sure you want to reset the database? This will drop and recreate the database.', false);
+    if ($confirm) {
+        if (fs()->exists('migrations')) {
+            run('rm -Rf migrations/*');
+        };
+        run('symfony console doctrine:database:drop --force');
+        run('symfony console doctrine:database:create');
+        run('symfony console make:migration');
+        run('symfony console doctrine:migrations:migrate --no-interaction');
+
+        if (fs()->exists('src/DataFixtures')) {
+            $fixtures = io()->confirm('Would you like to load fixtures?', false);
+            if ($fixtures) {
+                loadFixtures();
+            }
+        };
+        io()->newLine();
+        io()->success('Database reset');
+    } else {
+        io()->warning('Database not reset');
     }
-    io()->newLine();
-    io()->success('Database reset');
 }
 
 /**
@@ -490,12 +523,13 @@ function installFixtures(): void
     run('composer require --dev doctrine/doctrine-fixtures-bundle');
 
     io()->newLine();
-    $useFaker = io()->ask('Would you use FakerPHP?', 'y');
+    $useFaker = io()->confirm('Would you use FakerPHP?', false);
 
-    if ($useFaker === 'y') {
+    if ($useFaker) {
         io()->section('Installing FakerPHP');
         run('composer require --dev fakerphp/faker');
 
+        io()->newLine();
         io()->success('FakerPHP installed');
     }
 }
@@ -510,4 +544,6 @@ function loadFixtures(): void
 {
     io()->title('Loading Fixtures');
     run('symfony console doctrine:fixtures:load --no-interaction');
+    io()->newLine();
+    io()->success('Fixtures loaded');
 }
