@@ -69,9 +69,9 @@ function symfonyInit(): void
 
     if (!fs()->exists('composer.json')) {
         io()->section('Creating a new Symfony project in the current directory');
-        $sf_version = io()->ask('What version of Symfony do you want to use? (default: latest)', '');
+        $sf_version = io()->ask('What version of Symfony do you want to use? (default: 7.3.x)', '7.3.x');
         $stability = io()->ask('What stability do you want to use?', 'stable');
-        run('composer create-project "symfony/skeleton ' . $sf_version . '" tmp --stability="' . $stability . '" --prefer-dist --no-progress --no-interaction --no-install');
+        run('composer create-project symfony/skeleton:"' . $sf_version . '" tmp --prefer-dist --no-progress --no-interaction --no-install');
 
         run('cp -Rp tmp/. .');
         run('rm -Rf tmp/');
@@ -188,7 +188,6 @@ function dockerStart(): void
 
     $app_port = loadEnv(__DIR__ . '/.env.docker')['APP_PORT'];
     $phpma_port = loadEnv(__DIR__ . '/.env.docker')['PHPMYADMIN_PORT'];
-    $pgadmin_port = loadEnv(__DIR__ . '/.env.docker')['PGADMIN_PORT'];
     $mailpit_port = loadEnv(__DIR__ . '/.env.docker')['MAILPIT_HTTP_PORT'];
 
     $msg = [];
@@ -200,10 +199,6 @@ function dockerStart(): void
     if ($phpma_port) {
         $phpma_msg = 'You can now access PHPMyAdmin at http://localhost:' . $phpma_port;
         $msg[] = $phpma_msg;
-    }
-    if ($pgadmin_port) {
-        $pgadmin_msg = 'You can now access PgAdmin at http://localhost:' . $pgadmin_port;
-        $msg[] = $pgadmin_msg;
     }
 
     if ($mailpit_port) {
@@ -243,7 +238,6 @@ function dockerRestart(): void
 
     $app_port = loadEnv(__DIR__ . '/.env.docker')['APP_PORT'];
     $phpma_port = loadEnv(__DIR__ . '/.env.docker')['PHPMYADMIN_PORT'];
-    $pgadmin_port = loadEnv(__DIR__ . '/.env.docker')['PGADMIN_PORT'];
     $mailpit_port = loadEnv(__DIR__ . '/.env.docker')['MAILPIT_HTTP_PORT'];
 
     $msg = [];
@@ -256,11 +250,6 @@ function dockerRestart(): void
         $phpma_msg = 'You can now access PHPMyAdmin at http://localhost:' . $phpma_port;
         $msg[] = $phpma_msg;
     }
-    if ($pgadmin_port) {
-        $pgadmin_msg = 'You can now access PgAdmin at http://localhost:' . $pgadmin_port;
-        $msg[] = $pgadmin_msg;
-    }
-
     if ($mailpit_port) {
         $mailpit_msg = 'You can now access Mailpit at http://localhost:' . $mailpit_port;
         $msg[] = $mailpit_msg;
@@ -367,9 +356,9 @@ function makeController(): void
 /**
  * Creates a new User.
  *
- * This task invokes the Symfony console command to generate a new user class.
+ * This task invokes the Symfony console command to generate a new user entity class.
  */
-#[AsTask(description: 'Create new User', aliases: ['make:user'], namespace: 'maker')]
+#[AsTask(description: 'Create new User Entity', aliases: ['make:user'], namespace: 'maker')]
 function makeUser(): void
 {
     io()->title('Creating new User');
