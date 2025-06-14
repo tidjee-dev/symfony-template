@@ -2,4 +2,4 @@
 .castor.stub.php
 
 # Ignore the .env.docker file
-.env.docker
+.env.dev.docker
