@@ -32,7 +32,7 @@ It provides:
 
 - **Frameworks**
 
-  [![Symfony](https://img.shields.io/badge/Symfony-7.x-000?logo=symfony)](https://symfony.com/)
+  [![Symfony](https://img.shields.io/badge/Symfony-latest-000?logo=symfony)](https://symfony.com/)
 
 - **Web Server**
 
